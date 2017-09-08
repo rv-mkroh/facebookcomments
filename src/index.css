@@ -62,6 +62,10 @@ h1 {
 input, button {
   margin-right: 3px;
 }
+span button {
+  display: inline-block;
+  width: 80px;
+}
 .commentForm input {
   margin: 0 3px;
 }
