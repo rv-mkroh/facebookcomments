@@ -7,13 +7,14 @@ import data from './data';
 class App extends Component {
   constructor() {
     super();
-    this.state = data.initState;
+    this.state = Object.assign({}, data.initState);
     this.handleComment = this.handleComment.bind(this);
     this.handleCommentUpdate = this.handleCommentUpdate.bind(this);
   }
 
   handleResponse(action, parent, child) {
     let state = Object.assign({},this.state);
+
     if ( child > -1 ) {
       state.comments[parent].replies[child][action]++;
     } else {
@@ -34,12 +35,15 @@ class App extends Component {
 
   handleComment(event) {
     event.preventDefault();
-    let state = Object.assign({},this.state);
-    let newComment = data.commentTemplate;
+    let comments = this.state.comments.slice();
+    let newComment = Object.assign({}, data.commentTemplate);
+
     newComment.text = this.state.commentInput;
-    state.comments.push(newComment);
-    state.commentInput = '';
-    this.setState(state);
+    comments.push(newComment);
+    this.setState({
+      "commentInput": '',
+      comments
+    });
   }
 
   handleCommentUpdate(event) {
@@ -50,12 +54,16 @@ class App extends Component {
 
   handleReply(event, commentIndex) {
     event.preventDefault();
-    let state = Object.assign({},this.state);
-    let newReply = data.replyTemplate;
-    newReply.replytext = state.comments[commentIndex].replyInput;
-    state.comments[commentIndex].replies.push(newReply);
-    state.comments[commentIndex].replyInput = '';
-    this.setState(state);
+    let comments = this.state.comments.slice();
+    let replies = comments[commentIndex].replies.slice();
+    let newReply = Object.assign({}, data.replyTemplate);
+    newReply.replytext = comments[commentIndex].replyInput;
+    replies.push(newReply);
+    comments[commentIndex].replies = replies;
+    comments[commentIndex].replyInput = '';
+    this.setState({
+      comments
+    });
   }
 
   handleReplyUpdate(event, commentIndex) {
